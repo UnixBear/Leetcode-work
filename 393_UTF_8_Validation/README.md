@@ -82,7 +82,7 @@ step 3) I've come up with a seeminly efficient way to do this, in the O(1) terri
 ~~translating numbers into full bytes~~
 
 `convertUTF` via mapping converts into byte length
-
+     
 
 
 

@@ -1,44 +1,38 @@
-
-
-var validUtf8 = function (temp) {
-    var convertUtf8 = function (data) {
-        let biArray = data.map((num) => {
-            let biNum = (num >>> 0).toString(2);
-            if (biNum.length === 8) {
-                return biNum;
+var validUtf8 = function (dataArray) {
+        let remainder = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+            console.log(remainder);
+            console.log(dataArray[i])
+            console.log((dataArray[i] >>> 0).toString(2))
+            if (remainder === 0) {
+                if ((dataArray[i] >>> 5).toString(2) === '110') {
+                    console.log((dataArray[i] >>> 5).toString(2) + " === 110: success, remainder = 1" )
+                    remainder = 1;
+                }
+                else if ((dataArray[i] >>> 4).toString(2) === '1110') {
+                    console.log((dataArray[i] >>> 4).toString(2) + "=== 1110: success, remainder = 2")
+                    remainder = 2;
+                }
+                else if ((dataArray[i] >>> 3).toString(2) === '11110') {
+                    console.log((dataArray[i] >>> 3).toString(2) + " === 11110: success, remainder = 3")
+                    remainder = 3;
+                }
+                else if ((dataArray[i] >>> 7).toString(2) !== '0') {
+                    console.log((dataArray[i] >>> 7).toString(2) + " != 0: success, exiting false")
+                    return false;
+                }
             }
             else {
-                return ("0".repeat(8 - biNum.length) + biNum);
+                if ((dataArray[i] >>> 6).toString(2) != '10') {
+                    console.log((dataArray[i] >>> 6).toString(2) + " != 10: success, exiting false")
+                    return false;
+                }
+                else {
+                    console.log("no case reached, decreminting remainder")
+                    remainder = remainder - 1;
+                
+                }
             }
-        })
-        return biArray;
+        }
+        return remainder === 0;
     }
-    let remainder = 0;
-    let dataArray = convertUtf8(temp);
-    dataArray.forEach(function (data) {
-        if (remainder === 0) {
-            if (data.substr(0, 3) === '110') {
-                remainder = 1;
-            }
-            else if (data.substr(0, 4) === '1110') {
-                remainder = 2;
-            }
-            else if (data.substr(0, 5) === '11110') {
-                remainder = 3;
-            }
-            else if (data.slice(-2) != 0) {
-                return false;
-            }
-        }
-        else {
-            if (data.substr(0, 2) != '10') {
-                return false;
-            }
-            else {
-                remainder = remainder - 1;
-            
-            }
-        }
-    })
-    return remainder === 0;
-}
