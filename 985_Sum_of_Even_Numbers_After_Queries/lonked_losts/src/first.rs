@@ -1,4 +1,5 @@
 use std::mem;
+// pub says we want people outside this module to be able to use List
 pub struct List {
     head: Link,
 }
