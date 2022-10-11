@@ -33,4 +33,30 @@ fn main() {
             
         }
     }
+impl Solution {
+    pub fn sum_even_after_queries(nums: Vec<i32>, queries: Vec<Vec<i32>>) -> Vec<i32> {
+        //we want to get a 
+        //let mut new_nums = nums.iter().filter(|num| **num%2 == 0).sum();
+        let mut sum: i32 = nums.iter().filter(|num| **num % 2 == 0).sum();
+        let mut rez = vec![];
+        let mut it = queries.iter().map(|query| query.as_slice());
+        while let Some(&[val, index]) = it.next() {
+            let index = index as usize;
+            if nums[index] % 2 == 0 { sum -= nums[index]}
+            nums[index] += val;
+            if nums[index] % 2 == 0 { sum += nums[index]}
+            rez.push(sum);
+        }
+        rez
+        return new_nums;
+    }
+}
+
+impl Solution {
+    pub fn sum_even_after_queries(nums: Vec<i32>, queries: Vec<Vec<i32>>) -> Vec<i32> {
+        
+    }
+}
+
+fn main(){
 }
