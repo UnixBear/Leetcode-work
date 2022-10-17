@@ -1,0 +1,42 @@
+use std::io;
+use rand::{Rng, thread_rng};
+use std::cmp::Ordering;
+
+//for coloring stdout
+use colored::*;
+
+//for debugging purposes
+use std::any::type_name;
+
+fn main() {
+    println!("fkn guess");
+    let mut sekrit_gen = thread_rng();
+    let sekrit_num :u32 = sekrit_gen.gen_range(0..100);
+    println!("psst the answer is {}", sekrit_num);
+    loop {
+        let mut guess = String::new();
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("u fkd up");
+
+        //changed guess assignment to also do typechecking with a match statement
+        //let guess :u32 = guess.trim().parse().expect("dude this isn't a fkn number try again >;|");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+        println!("u guessed: {}", guess);
+
+        //for checking our cmp expression returns an Ordering variable
+        //println!("The type of guess is: {}", type_of(guess.cmp(&sekrit_num)))
+
+        match guess.cmp(&sekrit_num) {
+            Ordering::Less => println!("{}","go higher, [redacted]face".truecolor(185,71,0)),
+            Ordering::Greater => println!("{}","go lower, [redacted]face".truecolor(196, 99, 22)),
+            Ordering::Equal => {
+                println!("{}","go [redacted] yourself".truecolor(0,107,110).bold().on_truecolor(135, 28, 167));
+                break;
+            },
+            
+        }
+    }}

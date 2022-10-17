@@ -1,6 +1,3 @@
-use std::io;
-use rand::{Rng, thread_rng};
-use std::cmp::Ordering;
 pub struct Solution {
     rtn_val:i32,
 }
@@ -9,11 +6,9 @@ impl Solution {
         unimplemented!();
     }
 }
-/* 
+/*
 impl Solution {
-    pub fn sum_even_after_queries(nums: Vec<i32>, queries: Vec<Vec<i32>>) -> Vec<i32> {
-        //we want to get a 
-        //let mut new_nums = nums.iter().filter(|num| **num%2 == 0).sum();
+    pub fn sum_even_after_queries(mut nums: Vec<i32>, queries: Vec<Vec<i32>>) -> Vec<i32> {
         let mut sum: i32 = nums.iter().filter(|num| **num % 2 == 0).sum();
         let mut rez = vec![];
         let mut it = queries.iter().map(|query| query.as_slice());
@@ -25,35 +20,17 @@ impl Solution {
             rez.push(sum);
         }
         rez
-        return new_nums;
     }
-}
-*/
+}*/
+
+
 fn main() {
-    println!("fkn guess");
-    let mut sekrit_gen = thread_rng();
-    let sekrit_num :u32 = sekrit_gen.gen_range(0..100);
-    println!("psst the answer is {}", sekrit_num);
-    loop {
-        let mut guess = String::new();
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("u fkd up");
-        let guess :u32 = guess.trim().parse().expect("dude this isn't a fkn number try again >;|");
-
-         println!("u guessed: {}", guess);
-        //println!("now we cumpair hehe: {}", guess.cmp(&sekrit_num))
-        match guess.cmp(&sekrit_num) {
-            Ordering::Less => println!("go higher, fuckface"),
-            Ordering::Greater => println!("go lower, fuckface"),
-            Ordering::Equal => {
-                println!("go fuck yourself");
-                break;
-            }
-            
-        }
-    }}
-
+    let testvec = vec![1,2,3,4];
+    let mut testsum : i32 = testvec.into_iter().sum();
+    println!("{}", &testsum)
+    //let evenvec = testvec.into_iter().filter(|x| x % 2 == 0).collect::<Vec<i32>>();
+    //for element in &evenvec {println!("{}", element);}
+}
 
 
 
