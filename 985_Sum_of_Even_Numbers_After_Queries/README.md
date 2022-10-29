@@ -52,6 +52,27 @@ Let's see if this is a good idea!
 ## Notes
 1. I discovered [this](https://cglab.ca/%7Eabeinges/blah/too-many-lists/book/README.html) tutorial using linked lists and I hope to use it more.
 
+2. I've decided to make 2 versions of the solution, and iterative one and a functional one.
+
+3. I've added an iterative solution that utilizes slices to avoid the overhead of manual access.  This runs slower 1 ms but uses 0.3 less MBs of memory.
+
+### Iterative
+This one works as you'd normally think, with the only innovation being that we have a running total of our even values from the initial list and we subtract even values as we loop through our queries only to add them back if they are even.  This doesn't require any checking per iteration for even numbers and so runs O(n + m) because:
+    - it loops through the `nums` vector once to create our initial sum value `answer` once (n)
+    - it loops through the `queries` array and does 2 comparisons and modifying a fixed value `answer` per loop (m)
+
+### Functional
+This one is a tough one to follow, so credit to jhagmar on the forums for putting this out.  It takes advantage of a trick in rust known as a 'if lets' found [here](https://doc.rust-lang.org/rust-by-example/flow_control/if_let.html "if lets").   Essentially we turn our queries into an iterable and run a complicated `filter_map` on it. F
+
+`queries.iter().filter_map(...`
+
+The next part:
+
+ `filter_map(|query| if let &[val, index] = query.as_slice() {...`
+will start the matching process of every query.  We want to destructure each vector into a slice for ease of access and to avoid clunky manual access.  `if let &[val,index] = query...` tells rust we want to take the query slice and turn it into it's form, then check if its form matches the form of the generic &[val,index].
+
+`{Some((val, index as usize)) } else { None })...`
+With the conditional in play, if the slice is of this form then we create `Some(tuple)` where we cast the index variable as `usize`. Because we're attempting to be functional, we have to be exhaustive so our else is just `None`.   
 ## Conclusion
 TBD
 
