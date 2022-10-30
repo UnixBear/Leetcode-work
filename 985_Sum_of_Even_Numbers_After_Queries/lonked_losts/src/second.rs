@@ -115,6 +115,9 @@ mod test {
         list.peek_mut().map(|value| {
             *value = 42;
         });
+        let test_strong = Some("hi".to_string());
+        let test_uzisze = test_strong.map(|word| {word.len()});
+        assert_eq!(test_strong, Some("hi".to_string()));
 
         assert_eq!(list.peek(), Some(&42));
         assert_eq!(list.pop(), Some(42));
