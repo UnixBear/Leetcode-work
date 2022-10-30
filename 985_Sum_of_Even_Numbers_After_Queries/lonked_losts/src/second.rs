@@ -3,7 +3,7 @@
 //pub means we want people outside this module to be able to use List..
 //We turn List into a List of type <T> to make it generic
 pub struct List<T> {
-    head: Link,
+    head: Link<T>,
 }
 
 //We'll replace our Link with a type alias that is an Option<Box<Node>>,
@@ -20,10 +20,10 @@ pub struct List<T> {
 //have it be generic over types by making Link an option of a box of
 //of node which we'll add a generic type T to and replace references
 //i32 with <T>
-type Link = Option<Box<Node<T>>>;
+type Link<T> = Option<Box<Node<T>>>;
 
 
-struct Node {
+struct Node<T> {
     elem: T,
     next: Link<T>,
 }
@@ -54,8 +54,8 @@ impl<T> List<T> {
             &node.elem
         })
     }
-    pub fn mut_peek(&mut self) -> Option<&mut T> {
-        self.head.as_ref().map(|node| {
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        self.head.as_mut().map(|node| {
             &mut node.elem
         })
     }
@@ -63,9 +63,8 @@ impl<T> List<T> {
 impl<T> Drop for List<T> {
     fn drop(&mut self) {
         let mut cur_link = self.head.take();
-
         while let Some(mut boxed_node) = cur_link {
-            cur_link = self.head.take();
+            cur_link = boxed_node.next.take();
         }
     }
 }
@@ -105,8 +104,19 @@ mod test {
 
     #[test]
     fn peek() {
+        use super::List;
         let mut list = List::new();
         assert_eq!(list.peek(), None);
-        assert_eq!(list.mut_peek(),None);
+        assert_eq!(list.peek_mut(), None);
+        list.push(1); list.push(2); list.push(3);
+    
+        assert_eq!(list.peek(), Some(&3));
+        assert_eq!(list.peek_mut(), Some(&mut 3));
+        list.peek_mut().map(|value| {
+            *value = 42;
+        });
+
+        assert_eq!(list.peek(), Some(&42));
+        assert_eq!(list.pop(), Some(42));
     }
 }
