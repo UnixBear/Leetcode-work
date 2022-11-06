@@ -6,6 +6,91 @@ pub struct List<T> {
     head: Link<T>,
 }
 
+
+//We're implementing a tuple struct here
+pub struct IntoIter<T>(List<T>);
+
+impl<T> List<T> {
+    pub fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
+    }
+}
+
+impl<T> Iterator for IntoIter<T> {
+    type Item = T;
+    fn next(&mut self) -> Option<Self::Item> {
+        //Access fields of a struct numerically
+        self.0.pop()
+    }
+}
+
+//Iter is generic so we have to specify a lifetime
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
+}
+
+//Since we only use lifetimes for functions and types
+//we don't don't need it for this declaration of our
+//implementation
+impl<T> List<T> {
+
+    //We need a lifetime for this function because we have
+    //a borrow of self that creates the iter. &self  needs
+    //to be valid for as long as Iter is around
+    pub fn iter<'a>(&'a self) -> Iter<'a, T> {
+        Iter {
+            next: self.head.as_deref().map(|node| &*node)
+        }
+    }   
+}
+
+impl<'a, T> Iterator for Iter<'a, T> {
+    //Because our type includes a lifetime, we don't need
+    //it in our next definition because it's presumed in
+    //the type declaration.
+    type Item = &'a T;
+
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next.map(|node| {
+            self.next = node.next.as_deref().map(|node| &*node);
+            &node.elem
+        })
+    }
+}
+
+
+//Since mutable references are not to be shared, a mutable iterable
+//is going to be more complicated than the shared references of
+//Iter. 
+
+//Setting up our struct so we can handle a mutable list and
+//explicitly linking the lifetimes to the reference
+pub struct IterMut<'a, T> {
+    next: Option<&'a mut Node<T>>,
+}
+
+//iter_mut return type needs an anonymous lifetime for elision
+//since it's an implementation for a struct
+impl<T> List<T> {
+    pub fn iter_mut(&mut self) -> IterMut<'_,T> {
+        IterMut { next: self.head.as_deref_mut()}
+    }
+}
+
+impl<'a, T> Iterator for IterMut<'a, T> {
+    type Item = &'a mut T;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next.take().map(|node | {
+            self.next=node.next.as_deref_mut();
+            &mut node.elem
+        })
+    }
+
+}
+
+
+
 //We'll replace our Link with a type alias that is an Option<Box<Node>>,
 //since Link is an enum that either has Empty or Box<Node>>
 //enum Link {Empty, More(Box<Node>),}
@@ -22,12 +107,10 @@ pub struct List<T> {
 //i32 with <T>
 type Link<T> = Option<Box<Node<T>>>;
 
-
 struct Node<T> {
     elem: T,
     next: Link<T>,
 }
-
 
 impl<T> List<T> {
     pub fn new() -> Self {
@@ -115,11 +198,44 @@ mod test {
         list.peek_mut().map(|value| {
             *value = 42;
         });
-        let test_strong = Some("hi".to_string());
-        let test_uzisze = test_strong.map(|word| {word.len()});
-        assert_eq!(test_strong, Some("hi".to_string()));
 
         assert_eq!(list.peek(), Some(&42));
         assert_eq!(list.pop(), Some(42));
+    }
+    #[test]
+    fn into_iter() {
+        use super::List;
+        let mut list = List::new();
+        list.push(1); list.push(2); list.push(3);
+        let mut iter = list.into_iter();
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), None); 
+    }
+
+    #[test]
+    fn iter() {
+        use super::List;
+        let mut list = List::new();
+        list.push(1); list.push(2); list.push(3);
+        
+        let mut iter = list.iter();
+        assert_eq!(iter.next(), Some(&3));
+        assert_eq!(iter.next(), Some(&2));
+        assert_eq!(iter.next(), Some(&1));
+    }
+
+    #[test]
+    fn iter_mut() {
+        use super::List;
+        let mut list = List::new();
+        list.push(1); list.push(2); list.push(3);
+
+        let mut iter = list.iter_mut();
+        assert_eq!(iter.next(), Some(&mut 3));
+        assert_eq!(iter.next(), Some(&mut 2));
+        assert_eq!(iter.next(), Some(&mut 1));
+
     }
 }
