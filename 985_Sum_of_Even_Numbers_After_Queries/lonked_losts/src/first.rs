@@ -80,7 +80,3 @@ mod test {
         assert_eq!(list.pop(), None);
     }
 }
-
-fn main() {
-    println!("hi")
-}
