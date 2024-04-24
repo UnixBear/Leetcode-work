@@ -31,5 +31,8 @@ Constraints:
 ## Result
 
 ### Python
-
 ![Score](image.png)
+
+### C++
+![yay](image-1.png)
+
