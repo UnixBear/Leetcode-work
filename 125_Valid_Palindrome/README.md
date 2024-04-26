@@ -36,3 +36,6 @@ Constraints:
 ### C++
 ![yay](image-1.png)
 
+### Rust
+![alt text](image-2.png)
+
