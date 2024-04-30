@@ -29,3 +29,6 @@ Follow up: Suppose there are lots of incoming s, say s1, s2, ..., sk where k >= 
 
 ### CPP
 ![not good](image-1.png)
+
+### RUST
+![VERY GOOD](image-2.png)
