@@ -38,3 +38,9 @@ Your solution must use only constant extra space.
 
 ### Python
 ![not too bad](image.png)
+
+### C++
+![very nice](image-1.png)
+
+### Rust
+![not too bad](image-2.png)
