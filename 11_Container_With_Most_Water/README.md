@@ -34,4 +34,6 @@ Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,
 
 ### C++
 ![not too good](image-2.png)
+
 ### Rust
+![not too bad](image-3.png)
