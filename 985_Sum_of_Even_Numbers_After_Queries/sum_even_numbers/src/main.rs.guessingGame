@@ -1,0 +1,103 @@
+use std::io;
+use rand::{Rng, thread_rng};
+use std::cmp::Ordering;
+
+//for coloring stdout
+use colored::*;
+
+//for debugging purposes
+use std::any::type_name;
+
+fn main() {
+    println!("fkn guess");
+    let mut sekrit_gen = thread_rng();
+    let sekrit_num :u32 = sekrit_gen.gen_range(0..100);
+    println!("psst the answer is {}", sekrit_num);
+    loop {
+        let mut guess = String::new();
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("u fkd up");
+
+        //changed guess assignment to also do typechecking with a match statement
+        //let guess :u32 = guess.trim().parse().expect("dude this isn't a fkn number try again >;|");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+        println!("u guessed: {}", guess);
+
+        //for checking our cmp expression returns an Ordering variable
+        //println!("The type of guess is: {}", type_of(guess.cmp(&sekrit_num)))
+
+        match guess.cmp(&sekrit_num) {
+            Ordering::Less => println!("{}","go higher, [redacted]face".truecolor(185,71,0)),
+            Ordering::Greater => println!("{}","go lower, [redacted]face".truecolor(196, 99, 22)),
+            Ordering::Equal => {
+                println!("{}","go [redacted] yourself".truecolor(0,107,110).bold().on_truecolor(135, 28, 167));
+                break;
+            },
+            
+        }
+    }
+    
+    //testing the iterator returned by map() to change order of operations
+    /*
+    let testvec = vec![1,2,3,4];
+    let mut cyclecounter = 0;
+    let result:Vec<(_,_)>= testvec
+        .into_iter()
+        .rev()
+        .map(|num| {
+            cyclecounter += 1;
+            return (num, cyclecounter)
+        })
+        .collect();
+    println!("{:?}", result);
+    */
+
+    //testing out how to get around mapping that fails with flat_map() and failing with unwrap()
+    /*
+    let str_nums : Vec<&str> = vec!["1","2","3", "i snuck in hehehe"];
+    let numbers :Vec<u32> = str_nums
+        .iter()
+        //.map(|num| num.parse::<u32>().unwrap()) doesn't work because some of the elements are untranslatable to an u32
+        .flat_map(|num| num.parse::<u32>())
+        .collect();
+    println!("{:?}",numbers)
+    */
+
+    //testing out hashmaps and collect turbofish
+    /*
+    let text = String::from("yes hello this is dad");
+    let result = "abcdefghijklmnopqrstuvwxyz"
+        .chars() //becomes an iterator over every character in a String 
+        .map(|c| (c,text.matches(c).count()))
+        .collect::<std::collections::HashMap<_,_>>();
+    println!("{:?}",result);
+    */
+
+    //testing out assignment in using iterables and borrowing
+    /*let testvec1 = vec![1,2,3,4];
+    let testvec2 : Vec<i32> = testvec1.iter()
+        .map(|num| num * 10)
+        .map(|num| num + 1)
+        .collect();
+    for element in testvec2.iter() {println!("{}", element);}
+    for element in testvec1.iter() {println!("{}", element);}
+    */
+    
+    
+    //testing out Vector::iter() vs Vector::into_iter()
+    //let testvec = vec![1,2,3,4];
+    //for num in testvec.iter() {println!("{}",&num)}    
+    //for num in testvec.into_iter() {println!("{}", &num)}
+    
+    //let testvec = vec![1,2,3,4];
+    //let mut testsum : i32 = testvec.into_iter().sum();
+    //println!("{}", &testsum)
+    
+    //testing out lambda functions aka anonymous functions and the filter trait
+    //let evenvec = testvec.into_iter().filter(|x| x % 2 == 0).collect::<Vec<i32>>();
+    //for element in &evenvec {println!("{}", element);}
+    }
